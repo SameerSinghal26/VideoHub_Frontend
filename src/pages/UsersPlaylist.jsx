@@ -1,10 +1,21 @@
 import React, { useEffect } from 'react';
 import { usePlaylist } from '../context/PlaylistContext';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const UsersPlaylist = () => {
     const { userId } = useParams(); // Get userId from URL
     const { otherUserPlaylists, loading, error, fetchOtherUserPlaylists } = usePlaylist();
+    const navigate = useNavigate();
+    const auth = useSelector((state) => state.auth);
+
+    // Authentication check
+    useEffect(() => {
+        if (!auth.user) {
+            navigate('/login', { state: { error: "Please login to view playlists" } });
+            return;
+        }
+    }, [auth.user, navigate]);
 
     useEffect(() => {
         if (userId) {

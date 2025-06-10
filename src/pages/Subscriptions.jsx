@@ -6,6 +6,7 @@ import { Grid, List } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import VideoCardList from "../components/VideoCardList.jsx";
 import Toast from "../Toast.jsx";
+import { useSelector } from 'react-redux';
 
 function Subscriptions() {
 
@@ -18,6 +19,15 @@ function Subscriptions() {
   const [viewMode, setViewMode] = useState("grid"); // "grid" or "list"
   const [toast, setToast] = useState(null);
   const navigate = useNavigate();
+  const auth = useSelector((state) => state.auth);
+
+  // Authentication check
+  useEffect(() => {
+    if (!auth.user) {
+      navigate('/login', { state: { error: "Please login to view subscriptions" } });
+      return;
+    }
+  }, [auth.user, navigate]);
 
   const showToast = (msg) => {
     setToast({ msg });

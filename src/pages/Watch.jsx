@@ -19,6 +19,15 @@ const Watch = () => {
   const { isSidebarOpen } = useSidebar();
   const navigate = useNavigate();
   const { toast: commentToast } = useComment();
+  const auth = useSelector((state) => state.auth);
+
+  // Authentication check
+  useEffect(() => {
+    if (!auth.user) {
+      navigate('/login', { state: { error: "Please login to watch videos" } });
+      return;
+    }
+  }, [auth.user, navigate]);
 
   const [activeMenuId, setActiveMenuId] = useState(null);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });

@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { usePlaylist } from '../context/PlaylistContext';
 import Toast from '../Toast';
 import { useSidebar } from "../context/SideBarContext.jsx";
+import { useSelector } from 'react-redux';
 
 function PlayLists() {
   const { playlists, loading, error, toast, user, handleDeletePlaylist, handleUpdatePlaylist } = usePlaylist();
@@ -14,7 +15,16 @@ function PlayLists() {
   const [showUpdateModal, setShowUpdateModal] = React.useState(false);
   const [playlistToUpdate, setPlaylistToUpdate] = React.useState(null);
   const [updateForm, setUpdateForm] = React.useState({ name: "", description: "" });
-  
+  const auth = useSelector((state) => state.auth);
+
+  // Authentication check
+  React.useEffect(() => {
+    if (!auth.user) {
+      navigate('/login', { state: { error: "Please login to view playlists" } });
+      return;
+    }
+  }, [auth.user, navigate]);
+
   if (loading) return (
     <div className="flex flex-col items-center justify-center min-h-[100vh] bg-black">
       <img src="/1479.gif" alt="Loading..." className="w-20 h-20" />

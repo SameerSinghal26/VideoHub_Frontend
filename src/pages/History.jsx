@@ -5,6 +5,7 @@ import { useSidebar } from '../context/SideBarContext';
 import { format, isToday, isYesterday, isThisWeek, isThisYear, differenceInCalendarDays } from 'date-fns';
 import Toast from '../Toast.jsx';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 function groupHistoryByDate(history) {
   const groups = {};
@@ -79,6 +80,15 @@ function History() {
   const [error, setError] = useState(null);
   const [toast, setToast] = useState(null);
   const navigate = useNavigate();
+  const auth = useSelector((state) => state.auth);
+
+  // Authentication check
+  useEffect(() => {
+    if (!auth.user) {
+      navigate('/login', { state: { error: "Please login to view history" } });
+      return;
+    }
+  }, [auth.user, navigate]);
 
   useEffect(() => {
     const fetchHistory = async () => {

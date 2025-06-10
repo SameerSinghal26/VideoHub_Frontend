@@ -1,11 +1,22 @@
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useTweet } from '../context/TweetContext';
 import Tweet from '../components/Tweet';
+import { useSelector } from 'react-redux';
 
 function SingleTweet() {
   const { tweetId } = useParams();
   const { tweets, fetchAllTweets, loading, error } = useTweet();
+  const navigate = useNavigate();
+  const auth = useSelector((state) => state.auth);
+
+  // Authentication check
+  useEffect(() => {
+    if (!auth.user) {
+      navigate('/login', { state: { error: "Please login to view tweets" } });
+      return;
+    }
+  }, [auth.user, navigate]);
 
   useEffect(() => {
     if (!tweets.length) {

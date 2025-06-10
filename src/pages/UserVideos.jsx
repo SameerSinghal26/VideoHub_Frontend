@@ -44,6 +44,14 @@ const UserVideos = () => {
   const [playlistToUpdate, setPlaylistToUpdate] = useState(null);
   const [updateForm, setUpdateForm] = useState({ name: "", description: "" });
 
+  // Authentication check
+  useEffect(() => {
+    if (!user) {
+      navigate('/login', { state: { error: "Please login to view your videos" } });
+      return;
+    }
+  }, [user, navigate]);
+
   // Fetch user tweets when tab is selected
   useEffect(() => {
     if (activeTab === 'tweets' && user?._id) {

@@ -3,6 +3,8 @@ import { useSidebar } from '../context/SideBarContext';
 import VideoCardList from '../components/VideoCardList';
 import Toast from '../Toast';
 import { getLikedVideos, toggleVideoLike } from '../utils/api/auth';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const Likes = () => {
     const { isSidebarOpen } = useSidebar();
@@ -11,6 +13,16 @@ const Likes = () => {
     const [activeMenuId, setActiveMenuId] = useState(null);
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
     const [toast, setToast] = useState(null);
+    const navigate = useNavigate();
+    const auth = useSelector((state) => state.auth);
+
+    // Authentication check
+    useEffect(() => {
+        if (!auth.user) {
+            navigate('/login', { state: { error: "Please login to view liked videos" } });
+            return;
+        }
+    }, [auth.user, navigate]);
 
     useEffect(() => {
         const fetchLikedVideos = async () => {

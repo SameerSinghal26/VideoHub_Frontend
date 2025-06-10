@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { searchAll } from "../utils/api/auth";
+import { useSelector } from 'react-redux';
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -11,6 +12,16 @@ const Search = () => {
   const [results, setResults] = useState({ videos: [], users: [] });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const auth = useSelector((state) => state.auth);
+
+  // Authentication check
+  useEffect(() => {
+    if (!auth.user) {
+      navigate('/login', { state: { error: "Please login to search" } });
+      return;
+    }
+  }, [auth.user, navigate]);
 
   useEffect(() => {
     if (query) {

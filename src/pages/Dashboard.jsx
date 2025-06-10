@@ -66,6 +66,14 @@ function Dashboard() {
     fetchSubscriptionData
   } = useSubscription();
 
+  // Authentication check
+  useEffect(() => {
+    if (!user) {
+      navigate('/login', { state: { error: "Please login to view dashboard" } });
+      return;
+    }
+  }, [user, navigate]);
+
   const showToast = (msg) => {
     setToast({ msg });
     setTimeout(() => setToast(null), 4000);

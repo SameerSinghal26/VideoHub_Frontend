@@ -13,6 +13,14 @@ function Settings() {
   const [toast, setToast] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Authentication check
+  useEffect(() => {
+    if (!user) {
+      navigate('/login', { state: { error: "Please login to access settings" } });
+      return;
+    }
+  }, [user, navigate]);
+
   // Account update form
   const [accountForm, setAccountForm] = useState({
     fullName: '',

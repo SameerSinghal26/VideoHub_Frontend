@@ -4,6 +4,8 @@ import VideoCardList from '../components/VideoCardList';
 import { useSidebar } from '../context/SideBarContext';
 import Toast from '../Toast';
 import { fetchSingleVideoByPublicId, fetchUserById } from '../utils/api/auth';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const WatchLater = () => {
     const {
@@ -21,6 +23,16 @@ const WatchLater = () => {
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
     const [toast, setToast] = useState(null);
     const [videos, setVideos] = useState([]);
+    const navigate = useNavigate();
+    const auth = useSelector((state) => state.auth);
+
+    // Authentication check
+    useEffect(() => {
+        if (!auth.user) {
+            navigate('/login', { state: { error: "Please login to view watch later" } });
+            return;
+        }
+    }, [auth.user, navigate]);
 
     useEffect(() => {
         const fetchWatchLaterData = async () => {

@@ -472,7 +472,7 @@ function Dashboard() {
                 <p className="text-gray-400">Post your first tweet to get started!</p>
               </div>
             ) : (
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-4 px-80">
                 {tweets.map((tweet) => (
                   <div
                     key={tweet._id}

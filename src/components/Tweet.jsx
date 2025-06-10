@@ -296,7 +296,7 @@ const Tweet = ({ tweet, onVote, onDelete }) => {
                         <button onClick={() => handleAddTweetComment(tweet._id, newComment)} className="ml-2 text-blue-600 font-semibold">Post</button>
                     </div>
                     {loading ? (
-                        <div>Loading comments...</div>
+                        <div className='text-white'>Loading comments...</div>
                     ) : (
                         comments.map(comment => (
                             <div key={comment._id} className="flex flex-col mb-4">

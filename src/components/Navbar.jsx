@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import LoginButton from "./LoginButton";
-import SignupButton from "./SignupButton";
+import SignUpButton from "./SignupButton";
 import LogoutButton from "./LogoutButton";
 import Sidebar from "./Sidebar.jsx";
 import Profile from "./ProfileBar.jsx";
@@ -123,7 +123,7 @@ const Navbar = () => {
               {!auth.isAuthenticated ? (
                 <>
                   <LoginButton />
-                  <SignupButton />
+                  <SignUpButton />
                   <img
                     src={defaultAvatar}
                     alt="profile"

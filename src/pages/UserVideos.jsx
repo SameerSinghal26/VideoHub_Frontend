@@ -107,7 +107,7 @@ const UserVideos = () => {
       <div className={`flex items-center gap-6 py-1 ${isSidebarOpen ? "pl-30" : "pl-60"}`}>
         {/* Avatar */}
         <img
-          src={user.avatar}
+          src={user.avatar || "/download.webp"}
           alt={user.username}
           className="w-30 h-30 rounded-full object-cover border-4 border-neutral-800 shadow-lg"
         />

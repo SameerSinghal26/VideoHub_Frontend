@@ -118,7 +118,7 @@ const Tweets = () => {
                 <div className="max-w-2xl mx-auto p-4 w-full">
                     <div className="flex items-start gap-3 bg-neutral-900 rounded-xl p-4 mb-6">
                         <img
-                            src={user?.avatar}
+                            src={user?.avatar || "/download.webp"}
                             alt={user?.username}
                             className="w-10 h-10 rounded-full object-cover mt-1"
                         />

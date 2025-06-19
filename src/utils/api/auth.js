@@ -351,13 +351,6 @@ export const toggleCommentLike = async (commentId) => {
   return response;
 };
 
-export const toggleTweetLike = async (tweetId) => {
-  const response = await fetchData(`${BASE_URL}/likes/toggle/t/${tweetId}`, {
-    method: "POST",
-  });
-  return response;
-};
-
 export const getLikedVideos = async () => {
   const response = await fetchData(`${BASE_URL}/likes/videos`, {
     method: "GET",
@@ -374,13 +367,6 @@ export const checkVideoLike = async (videoId) => {
 
 export const checkCommentLike = async (commentId) => {
   const response = await fetchData(`${BASE_URL}/likes/check/c/${commentId}`, {
-    method: "GET",
-  });
-  return response.data;
-};
-
-export const checkTweetLike = async (tweetId) => {
-  const response = await fetchData(`${BASE_URL}/likes/check/t/${tweetId}`, {
     method: "GET",
   });
   return response.data;
@@ -493,7 +479,10 @@ export const voteInPoll = async (tweetId, optionIndex) => {
     headers: { "Content-Type": "application/json" },
     credentials: "include"
   });
-  return response;
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+  return response.json();
 };
 
 export const fetchCommentsByTweetId = async (tweetId) => {

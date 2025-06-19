@@ -5,7 +5,6 @@ import { Heart, MessageCircle, Share2, Repeat } from 'lucide-react';
 import { useSelector } from "react-redux";
 import ShareModal from './ShareModal';
 import { useComment } from '../context/CommentContext';
-import { useLike } from '../context/LikeContext';
 import Toast from './../Toast';
 import { reactToTweet } from '../utils/api/auth';
 
@@ -33,7 +32,9 @@ const Tweet = ({ tweet, onVote, onDelete }) => {
 
     React.useEffect(() => {
         if (tweet.reactions && user) {
-            const userReaction = tweet.reactions.find(r => String(r.user._id) === String(user._id));
+            const userReaction = tweet.reactions.find(
+                (r) => (typeof r.user === "object" ? r.user._id : r.user) === user?._id
+            );
             setUserReaction(userReaction ? userReaction.type : null);
             setReactionCount(tweet.reactions.length);
         }
@@ -125,7 +126,7 @@ const Tweet = ({ tweet, onVote, onDelete }) => {
     }
 
     return (
-        <div className="bg-neutral-900 rounded-xl p-4 mb-4">
+        <div className="rounded-xl p-4 mb-4">
             {toast && <Toast message={toast.msg} />}
             {/* Tweet Header */}
             <div className="flex items-start justify-between">
@@ -183,45 +184,59 @@ const Tweet = ({ tweet, onVote, onDelete }) => {
 
                 {/* Poll */}
                 {tweet.poll && tweet.poll.isActive && (
-                    <div className="mt-3 bg-neutral-800 rounded-lg p-4">
-                        <h3 className="font-bold mb-3">{tweet.poll.question}</h3>
-                        <div className="space-y-2">
-                            {tweet.poll.options.map((option, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => !hasVoted() && handleVote(index)}
-                                    className={`w-full p-2 rounded-lg text-left ${
-                                        hasVoted() 
-                                            ? 'bg-neutral-700 cursor-default' 
-                                            : 'hover:bg-neutral-700'
-                                    }`}
-                                    disabled={hasVoted()}
-                                >
-                                    <div className="flex justify-between items-center">
-                                        <span>{option.text} {/* index: {index} */}</span>
-                                        {hasVoted() && (
-                                            <span className="text-sm text-gray-400">
-                                                {getVotePercentage(option.votes.length)}%
-                                            </span>
-                                        )}
-                                    </div>
-                                    {hasVoted() && (
-                                        <div className="w-full bg-neutral-600 rounded-full h-2 mt-2">
-                                            <div 
-                                                className="bg-blue-500 h-2 rounded-full"
-                                                style={{ width: `${getVotePercentage(option.votes.length)}%` }}
-                                            />
-                                        </div>
-                                    )}
-                                </button>
-                            ))}
-                        </div>
-                        {hasVoted() && (
+                  <div className="mt-3 bg-black rounded-lg p-4">
+                    <h3 className="text-white font-bold mb-6">{tweet.poll.question}</h3>
+                    {(() => {
+                      const options = tweet.poll.options;
+                      const totalVotes = options.reduce((sum, opt) => sum + opt.votes.length, 0);
+                      const user = useSelector((state) => state.auth.user);
+                      const hasVoted = options.some(opt => opt.votes.some(vote => (typeof vote === "object" ? vote._id : vote) === user?._id));
+                      const colorMap = ["red", "green", "yellow", "blue", "purple", "pink"];
+                      return (
+                        <div className="w-full max-w-md mx-auto">
+                          {options.map((option, idx) => {
+                            const percent = totalVotes > 0 ? Math.round((option.votes.length / totalVotes) * 100) : 0;
+                            const userVoted = option.votes.some(vote => (typeof vote === "object" ? vote._id : vote) === user?._id);
+                            const borderColor = userVoted ? `border-2 border-${colorMap[idx % colorMap.length]}-500` : "border border-neutral-700";
+                            const barColor = `bg-${colorMap[idx % colorMap.length]}-500`;
+                            return (
+                              <div
+                                key={idx}
+                                className={`mb-4 rounded-lg px-4 py-3 bg-neutral-900 flex items-center ${borderColor}`}
+                                onClick={() => !hasVoted && handleVote(idx)}
+                                style={{ cursor: hasVoted ? 'default' : 'pointer' }}
+                              >
+                                <div className="flex-1">
+                                  <div className="flex items-center mb-1">
+                                    <span
+                                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mr-3 ${userVoted ? `border-${colorMap[idx % colorMap.length]}-500` : "border-gray-400"}`}
+                                    >
+                                      {userVoted && (
+                                        <span className={`w-3 h-3 rounded-full ${barColor} block`} />
+                                      )}
+                                    </span>
+                                    <span className="text-white font-medium">{option.text}</span>
+                                    <span className="ml-auto text-white font-semibold">{percent}%</span>
+                                  </div>
+                                  <div className="w-full bg-neutral-700 rounded-full h-2">
+                                    <div
+                                      className={`${barColor} h-2 rounded-full`}
+                                      style={{ width: `${percent}%` }}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                          {hasVoted && (
                             <p className="text-sm text-gray-400 mt-2">
-                                {getTotalVotes()} votes
+                              {totalVotes} votes
                             </p>
-                        )}
-                    </div>
+                          )}
+                        </div>
+                      );
+                    })()}
+                  </div>
                 )}
             </div>
 
@@ -270,9 +285,6 @@ const Tweet = ({ tweet, onVote, onDelete }) => {
                     <MessageCircle size={18} className="mr-1" /> Comments
                 </button>
 
-                <button className="flex items-center space-x-2 text-gray-500 hover:text-white">
-                    <Repeat size={18} className="mr-2"/> Repost
-                </button>
                 <button onClick={() => setShowShareModal(true)} className="text-gray-500 hover:text-white">
                     <Share2 size={20} />
                 </button>
@@ -390,6 +402,7 @@ const Tweet = ({ tweet, onVote, onDelete }) => {
                     onClose={() => setShowShareModal(false)}
                 />
             )}
+            <hr class="my-6 mb-0 border-zinc-700"></hr>
         </div>
     );
 };

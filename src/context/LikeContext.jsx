@@ -6,8 +6,6 @@ import {
   checkVideoLike,
   toggleCommentLike,
   checkCommentLike,
-  toggleTweetLike,
-  checkTweetLike
 } from '../utils/api/auth';
 import { useNavigate } from 'react-router-dom';
 
@@ -132,42 +130,6 @@ export const LikeProvider = ({ children }) => {
     }
   };
 
-  // Tweet like functions
-  const checkIfTweetIsLiked = async (tweetId) => {
-    if (!user || !tweetId) return false;
-    
-    try {
-      const response = await checkTweetLike(tweetId);
-      return response.isLiked;
-    } catch (err) {
-      if (err.message && !err.message.includes('404')) {
-        handleApiError(err);
-      }
-      return false;
-    }
-  };
-
-  const handleToggleTweetLike = async (tweetId) => {
-    if (!user) {
-      showToast("please login or register to continue.");
-      return;
-    }
-
-    if (!tweetId || !user?._id || loadingLike) return;
-    
-    setLoadingLike(true);
-    try {
-      const response = await toggleTweetLike(tweetId);
-      showToast(response.data.isLiked ? 'Tweet liked successfully!' : 'Tweet unliked successfully!');
-      return response.data.isLiked;
-    } catch (err) {
-      handleApiError(err);
-      return false;
-    } finally {
-      setLoadingLike(false);
-    }
-  };
-
   const resetLikeState = () => {
     setIsLiked(false);
     setLikedVideos([]);
@@ -193,8 +155,6 @@ export const LikeProvider = ({ children }) => {
     fetchLikedVideos,
     checkIfCommentIsLiked,
     handleToggleCommentLike,
-    checkIfTweetIsLiked,
-    handleToggleTweetLike
   };
 
   return (

@@ -5,6 +5,8 @@ import { useSidebar } from "../context/SideBarContext.jsx";
 import { usePlaylist } from "../context/PlaylistContext";
 import ShareModal from "./ShareModal.jsx";
 import SaveToPlaylistModal from "../components/SaveToPlaylistModal";
+import { useSelector } from "react-redux";
+import Toast from "../Toast.jsx";
 
 const VideoCard = ({
   video,
@@ -20,6 +22,8 @@ const VideoCard = ({
   const [showShareModal, setShowShareModal] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const isOpen = activeMenuId === video._id;
+  const auth = useSelector((state) => state.auth);
+  const [toast, setToast] = useState(null);
   
   const toggleMenu = () => {
     if (isOpen) {
@@ -76,6 +80,12 @@ const VideoCard = ({
   };
 
   const handleWatchLater = async () => {
+    if (!auth.isAuthenticated) {
+      setToast({ msg: "Please login to save in watch later" });
+      setActiveMenuId(null);
+      setTimeout(() => setToast(null), 4000);
+      return;
+    }
     try {
       // Find or create Watch Later playlist
       let watchLaterPlaylist = playlists.find(p => p.name === "Watch Later");
@@ -99,6 +109,7 @@ const VideoCard = ({
 
   return (
     <>
+    {toast && <Toast message={toast.msg} onClose={() => setToast(null)} />}
     <div
       className={`text-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow ${
         isSidebarOpen ? "w-[400px]" : "w-[450px]"
@@ -166,7 +177,15 @@ const VideoCard = ({
           >
             ⏰ <span>Save to Watch Later</span>
           </div>
-          <div onClick={() => setShowSaveModal(true)} className="hover:bg-neutral-800 px-4 py-2 cursor-pointer flex items-center gap-3">
+          <div onClick={() => {
+            if (!auth.isAuthenticated) {
+              setToast({ msg: "Please login to save in playlist" });
+              setActiveMenuId(null);
+              setTimeout(() => setToast(null), 4000);
+              return;
+            }
+            setShowSaveModal(true);
+          }} className="hover:bg-neutral-800 px-4 py-2 cursor-pointer flex items-center gap-3">
             📑 <span>Save to playlist</span>
           </div>
           <div onClick={() => setShowShareModal(true)} className="hover:bg-neutral-800 px-4 py-2 cursor-pointer flex items-center gap-3">
@@ -190,9 +209,6 @@ const VideoCard = ({
             }}
           >
             ❌ <span>Don't recommend channel</span>
-          </div>
-          <div className="hover:bg-neutral-800 px-4 py-2 cursor-pointer flex items-center gap-3">
-            🚩 <span>Report</span>
           </div>
         </div>
       )}

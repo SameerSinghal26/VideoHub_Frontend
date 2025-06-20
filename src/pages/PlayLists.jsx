@@ -126,7 +126,6 @@ function PlayLists() {
                 onClick={() => {
                   handleDeletePlaylist(playlistToDelete);
                   setShowDeleteModal(false);
-                  window.location.reload();
                 }}
               >
                 Delete

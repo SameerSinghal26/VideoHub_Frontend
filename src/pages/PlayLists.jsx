@@ -95,6 +95,8 @@ function PlayLists() {
                     className="text-red-500 hover:underline"
                     onClick={e => {
                       e.stopPropagation();
+                      console.log(playlist._id);
+                      
                       setPlaylistToDelete(playlist._id);
                       setShowDeleteModal(true);
                     }}

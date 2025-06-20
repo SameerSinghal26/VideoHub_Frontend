@@ -472,7 +472,7 @@ const UserVideos = () => {
         </div>
       )}
       {showVideoDeleteModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-60">
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-transparent bg-opacity-60">
           <div className="bg-neutral-900 rounded-xl p-8 shadow-2xl text-center w-full max-w-sm">
             <h2 className="text-xl font-bold text-white mb-4">Delete Video</h2>
             <p className="text-gray-300 mb-6">

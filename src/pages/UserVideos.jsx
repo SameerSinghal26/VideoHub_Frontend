@@ -84,12 +84,18 @@ const UserVideos = () => {
   const handleDeleteVideo = async (videoId) => {
     await deleteVideo(videoId);
     setUserVideos(userVideos.filter(video => video._id !== videoId));
+    // Show toast
+    if (typeof setToast === "function") setToast({ msg: "Video deleted successfully" });
   };
 
   const handleSwitchAccount = async () => {
     await dispatch(logout());
     navigate('/login');
   };
+
+  // New state for video delete
+  const [showVideoDeleteModal, setShowVideoDeleteModal] = useState(false);
+  const [videoToDelete, setVideoToDelete] = useState(null);
 
   if (!user || loading) {
     return <div className="flex flex-col items-center justify-center min-h-[100vh] bg-black">
@@ -286,9 +292,8 @@ const UserVideos = () => {
                   {video.owner._id === user._id && (
                     <button
                       onClick={() => {
-                        if (window.confirm('Are you sure you want to delete this video?')) {
-                          handleDeleteVideo(video._id);
-                        }
+                        setVideoToDelete(video._id);
+                        setShowVideoDeleteModal(true);
                       }}
                       className="absolute bottom-8 right-14 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                     >
@@ -463,6 +468,33 @@ const UserVideos = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {showVideoDeleteModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-60">
+          <div className="bg-neutral-900 rounded-xl p-8 shadow-2xl text-center w-full max-w-sm">
+            <h2 className="text-xl font-bold text-white mb-4">Delete Video</h2>
+            <p className="text-gray-300 mb-6">
+              Are you sure you want to delete this video? This action cannot be undone.
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                className="px-4 py-2 rounded bg-gray-700 text-white hover:bg-gray-600"
+                onClick={() => setShowVideoDeleteModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
+                onClick={async () => {
+                  await handleDeleteVideo(videoToDelete);
+                  setShowVideoDeleteModal(false);
+                }}
+              >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       )}

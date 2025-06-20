@@ -412,7 +412,7 @@ const Tweet = ({ tweet, onVote, onDelete }) => {
                     onClose={() => setShowShareModal(false)}
                 />
             )}
-            <hr class="my-6 mb-0 border-zinc-700"></hr>
+            <hr className="my-6 mb-0 border-zinc-700"></hr>
         </div>
     );
 };

@@ -75,6 +75,10 @@ export const PlaylistProvider = ({ children }) => {
 
   const handleUpdatePlaylist = async (playlistId, data) => {
     try {
+      console.log(playlistId);
+      console.log(data);
+      
+      
       await updatePlaylist(playlistId, data);
       // Fetch the updated playlist from the backend
       const updatedPlaylist = await getPlaylistById(playlistId);

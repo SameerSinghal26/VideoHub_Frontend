@@ -145,7 +145,6 @@ function PlayLists() {
                 e.preventDefault();
                 handleUpdatePlaylist(playlistToUpdate, updateForm);
                 setShowUpdateModal(false);
-                window.location.reload();
               }}
             >
               <div className="mb-4">

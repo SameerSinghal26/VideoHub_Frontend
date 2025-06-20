@@ -235,6 +235,8 @@ const UserVideos = () => {
                           className="text-blue-500 hover:underline"
                           onClick={e => {
                             e.stopPropagation();
+                            console.log(playlistToUpdate);
+                            console.log(updateForm);
                             setPlaylistToUpdate(playlist._id);
                             setUpdateForm({ name: playlist.name, description: playlist.description });
                             setShowUpdateModal(true);
@@ -246,6 +248,7 @@ const UserVideos = () => {
                           className="text-red-500 hover:underline"
                           onClick={e => {
                             e.stopPropagation();
+                            console.log(playlist._id);
                             setPlaylistToDelete(playlist._id);
                             setShowDeleteModal(true);
                           }}
@@ -374,7 +377,6 @@ const UserVideos = () => {
                 onClick={() => {
                   handleDeletePlaylist(playlistToDelete);
                   setShowDeleteModal(false);
-                  window.location.reload();
                 }}
               >
                 Delete
@@ -392,7 +394,6 @@ const UserVideos = () => {
                 e.preventDefault();
                 handleUpdatePlaylist(playlistToUpdate, updateForm);
                 setShowUpdateModal(false);
-                window.location.reload();
               }}
             >
               <div className="mb-4">

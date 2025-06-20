@@ -224,7 +224,7 @@ const UserVideos = () => {
                     <div>
                       <h2 className="text-white text-lg font-semibold mb-1 line-clamp-2">{playlist.name}</h2>
                       <div className="text-gray-400 text-xs mb-1 flex items-center gap-2">
-                        <img src={playlist.owner?.avatar} alt={playlist.owner?.username} className="w-6 h-6 rounded-full" />
+                        <img src={playlist.owner?.avatar || "/download.webp"} alt={playlist.owner?.username} className="w-6 h-6 rounded-full" />
                         {playlist.owner?.username}
                       </div>
                       <div className="text-gray-400 text-xs mb-2">
@@ -235,8 +235,6 @@ const UserVideos = () => {
                           className="text-blue-500 hover:underline"
                           onClick={e => {
                             e.stopPropagation();
-                            console.log(playlistToUpdate);
-                            console.log(updateForm);
                             setPlaylistToUpdate(playlist._id);
                             setUpdateForm({ name: playlist.name, description: playlist.description });
                             setShowUpdateModal(true);
@@ -248,7 +246,6 @@ const UserVideos = () => {
                           className="text-red-500 hover:underline"
                           onClick={e => {
                             e.stopPropagation();
-                            console.log(playlist._id);
                             setPlaylistToDelete(playlist._id);
                             setShowDeleteModal(true);
                           }}

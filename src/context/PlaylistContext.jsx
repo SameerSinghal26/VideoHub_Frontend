@@ -61,8 +61,6 @@ export const PlaylistProvider = ({ children }) => {
 
   const handleDeletePlaylist = async (playlistId) => {
     try {
-      console.log(playlistId);
-      
       await deletePlaylist(playlistId);
       // Remove the deleted playlist from state
       setPlaylists((prev) => prev.filter((p) => p._id !== playlistId));
@@ -75,10 +73,6 @@ export const PlaylistProvider = ({ children }) => {
 
   const handleUpdatePlaylist = async (playlistId, data) => {
     try {
-      console.log(playlistId);
-      console.log(data);
-      
-      
       await updatePlaylist(playlistId, data);
       // Fetch the updated playlist from the backend
       const updatedPlaylist = await getPlaylistById(playlistId);

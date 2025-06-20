@@ -80,6 +80,9 @@ export const PlaylistProvider = ({ children }) => {
         prev.map((p) => (p._id === playlistId ? updatedPlaylist : p))
       );
       showToast("Playlist updated successfully");
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
     } catch (err) {
       console.error("Error updating playlist:", err);
       showToast(err.message || "Failed to update playlist");

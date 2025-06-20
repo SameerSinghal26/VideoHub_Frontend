@@ -17,6 +17,15 @@ const reactionIcons = {
     angry: "😠"
 };
 
+const colorClassMap = {
+    red: "bg-red-500 border-red-500",
+    green: "bg-green-500 border-green-500",
+    yellow: "bg-yellow-500 border-yellow-500",
+    blue: "bg-blue-500 border-blue-500",
+    purple: "bg-purple-500 border-purple-500",
+    pink: "bg-pink-500 border-pink-500",
+};
+
 const Tweet = ({ tweet, onVote, onDelete }) => {
     const user = useSelector((state) => state.auth.user);
     const [showReactions, setShowReactions] = useState(false);
@@ -197,8 +206,9 @@ const Tweet = ({ tweet, onVote, onDelete }) => {
                           {options.map((option, idx) => {
                             const percent = totalVotes > 0 ? Math.round((option.votes.length / totalVotes) * 100) : 0;
                             const userVoted = option.votes.some(vote => (typeof vote === "object" ? vote._id : vote) === user?._id);
-                            const borderColor = userVoted ? `border-2 border-${colorMap[idx % colorMap.length]}-500` : "border border-neutral-700";
-                            const barColor = `bg-${colorMap[idx % colorMap.length]}-500`;
+                            const color = colorMap[idx % colorMap.length];
+                            const barColor = colorClassMap[color].split(" ")[0];
+                            const borderColor = userVoted ? colorClassMap[color].split(" ")[1] : "border border-neutral-700";
                             return (
                               <div
                                 key={idx}
@@ -209,7 +219,7 @@ const Tweet = ({ tweet, onVote, onDelete }) => {
                                 <div className="flex-1">
                                   <div className="flex items-center mb-1">
                                     <span
-                                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mr-3 ${userVoted ? `border-${colorMap[idx % colorMap.length]}-500` : "border-gray-400"}`}
+                                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mr-3 ${userVoted ? borderColor : "border-gray-400"}`}
                                     >
                                       {userVoted && (
                                         <span className={`w-3 h-3 rounded-full ${barColor} block`} />
@@ -218,7 +228,7 @@ const Tweet = ({ tweet, onVote, onDelete }) => {
                                     <span className="text-white font-medium">{option.text}</span>
                                     <span className="ml-auto text-white font-semibold">{percent}%</span>
                                   </div>
-                                  <div className="w-full bg-neutral-700 rounded-full h-2">
+                                  <div className="bg-neutral-700 rounded-full h-2 mt-2 ml-8">
                                     <div
                                       className={`${barColor} h-2 rounded-full`}
                                       style={{ width: `${percent}%` }}
